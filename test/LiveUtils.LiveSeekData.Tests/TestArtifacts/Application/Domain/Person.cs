@@ -18,9 +18,9 @@ namespace LiveUtils.LiveSeekData.Tests.TestArtifacts.Application.Domain
         public string FirstName { get; set; }
         [MaxLength(50)]
         public string LastName { get; set; }
-        [MaxLength(1)]
+        [MaxLength(50)]
         public string Gender  { get; set; }
-        public DateOnly BirthDate { get; set; }
+        public DateTime BirthDate { get; set; }
 
         public Person()
         {
