@@ -1,4 +1,5 @@
-﻿using LiveUtils.Seek;
+﻿using System;
+using LiveUtils.Seek;
 using NUnit.Framework;
 
 namespace LiveUtils.Tests.Seek

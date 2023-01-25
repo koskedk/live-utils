@@ -477,3 +477,5 @@ FodyWeavers.xsd
 # JetBrains Rider
 *.sln.iml
 
+# demo data
+demolive.db
