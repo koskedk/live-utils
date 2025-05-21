@@ -1,0 +1,25 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('QA') {
+            steps {
+                echo 'Running Automated Tests'
+                sh 'dotnet build'
+                sh '''
+                    dotnet test \
+                        --filter Category!=RequiresDB \
+                        --logger "junit;LogFilePath=TestResults/TestResults.xml" \
+                        --results-directory TestResults
+                '''
+            }
+        }
+    }
+
+    post {
+        always {
+            // Publish JUnit test results.
+            junit '**/TestResults/TestResults.xml'
+        }
+    }
+}
