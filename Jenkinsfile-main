@@ -59,13 +59,8 @@ pipeline {
                 reportTitles: ''
             ])
             
-            
-             // Archive coverage reports
-             archiveArtifacts artifacts: 'TestResults/**/*.cobertura.xml', allowEmptyArchive: true
-             
-             
              // Optional: Publish Cobertura coverage if plugin is installed
-             recordCoverage tools: [cobertura(pattern: 'TestResults/**/*.cobertura.xml')]
+             recordCoverage tools: [cobertura(pattern: 'TestResults/**/coverage.cobertura.xml')]
         }
     }
 }
