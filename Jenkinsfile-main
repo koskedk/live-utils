@@ -15,8 +15,7 @@ pipeline {
 
                 // Run tests with TRX and JUnit loggers
                 sh '''
-                dotnet test test/LiveUtils.Tests \
-                  --no-build \                  
+                dotnet test --no-build test/LiveUtils.Tests \
                   /p:CollectCoverage=true \
                   /p:CoverletOutput=TestResults/Coverage/LiveUtils/ \
                   /p:CoverletOutputFormat=cobertura \
@@ -25,8 +24,7 @@ pipeline {
                   --results-directory TestResults
                 '''
                 sh '''
-                dotnet test test/LiveUtils.LiveSeekData.Tests \
-                  --no-build \
+                dotnet test --no-build test/LiveUtils.LiveSeekData.Tests \
                   /p:CollectCoverage=true \
                   /p:CoverletOutput=TestResults/Coverage/LiveSeekData/ \
                   /p:CoverletOutputFormat=cobertura \
@@ -40,7 +38,7 @@ pipeline {
         stage('Generate HTML Reports') {
             steps {
                 // Install trxlog2html .NET tool (if not already installed)
-                sh 'dotnet tool install --global trxlog2html'
+                sh 'dotnet tool install --global trxlog2html || true'
                 
                 // Convert TRX files to HTML
                 sh 'trxlog2html -i TestResults/LiveUtils.trx -o TestResults/liveutils-report.html'
