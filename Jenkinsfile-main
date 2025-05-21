@@ -2,24 +2,60 @@ pipeline {
     agent any
 
     stages {
-        stage('QA') {
+        stage('Build') {
             steps {
-                echo 'Running Automated Tests'
                 sh 'dotnet build'
+            }
+        }
+
+        stage('Test') {
+            steps {
+                // Create directory for test results
+                sh 'mkdir -p TestResults'
+
+                // Run tests with TRX and JUnit loggers
                 sh '''
-                    dotnet test \
-                        --filter Category!=RequiresDB \
-                        --logger "junit;LogFilePath=TestResults/TestResults.xml" \
-                        --results-directory TestResults
+                dotnet test test/LiveUtils.Tests \
+                  --logger "trx;LogFileName=LiveUtils.trx" \
+                  --logger "junit;LogFilePath=TestResults/liveutils-junit.xml" \
+                  --results-directory TestResults
                 '''
+                sh '''
+                dotnet test test/LiveUtils.LiveSeekData.Tests \
+                  --logger "trx;LogFileName=LiveSeekData.trx" \
+                  --logger "junit;LogFilePath=TestResults/liveseekdata-junit.xml" \
+                  --results-directory TestResults
+                '''
+            }
+        }
+
+        stage('Generate HTML Reports') {
+            steps {
+                // Install Trx2Html .NET tool (if not already installed)
+                sh 'dotnet tool install --global Trx2Html --version 1.0.0'
+                
+                // Convert TRX files to HTML
+                sh 'Trx2Html TestResults/LiveUtils.trx -o TestResults/liveutils-report.html'
+                sh 'Trx2Html TestResults/LiveSeekData.trx -o TestResults/liveseekdata-report.html'
             }
         }
     }
 
     post {
         always {
-            // Publish JUnit test results.
-            junit 'test/**/TestResults/TestResults.xml'
+            // Publish JUnit results to Jenkins dashboard
+            junit 'TestResults/*-junit.xml'
+
+            // Publish HTML reports
+            publishHTML([
+                allowMissing: false,
+                alwaysLinkToLastBuild: true,
+                keepAll: true,
+                reportDir: 'TestResults',
+                reportFiles: 'liveutils-report.html,liveseekdata-report.html',
+                reportName: 'Test Results HTML',
+                reportTitles: ''
+            ])
         }
     }
 }
