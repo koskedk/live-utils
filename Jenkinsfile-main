@@ -62,7 +62,7 @@ pipeline {
             ])
             
              // Optional: Publish Cobertura coverage if plugin is installed
-             recordCoverage tools: [cobertura(pattern: 'TestResults/**/coverage.cobertura.xml')]
+             recordCoverage tools: [[parser: 'COBERTURA', pattern: 'TestResults/**/coverage.cobertura.xml']]
         }
     }
 }
