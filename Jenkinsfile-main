@@ -19,7 +19,7 @@ pipeline {
     post {
         always {
             // Publish JUnit test results.
-            junit '**/TestResults/TestResults.xml'
+            junit 'test/**/TestResults/TestResults.xml'
         }
     }
 }

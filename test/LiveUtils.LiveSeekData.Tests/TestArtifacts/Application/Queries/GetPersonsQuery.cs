@@ -37,7 +37,7 @@ namespace LiveUtils.LiveSeekData.Tests.TestArtifacts.Application.Queries
             var result = _context.Persons
                 .AsNoTracking()
                 .OrderBy(x => x.LiveRowId)
-                .Skip(request.Skip)
+                .Skip(request.Page)
                 .Take(request.Size)
                 .ToList();
             

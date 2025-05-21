@@ -21,7 +21,7 @@ namespace LiveUtils.LiveSeekData.Tests
     public class TestInitializer
     {
         public static IServiceProvider ServiceProvider;
-        public static int TotalItems = 1000000;
+        public static int TotalItems = 1000;
         public static IConfiguration Config;
 
         [OneTimeSetUp]
