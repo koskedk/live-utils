@@ -17,13 +17,13 @@ pipeline {
                 sh '''
                 dotnet test test/LiveUtils.Tests \
                   --logger "trx;LogFileName=LiveUtils.trx" \
-                  --logger "junit;LogFilePath=TestResults/liveutils-junit.xml" \
+                  --logger "junit;LogFileName=liveutils-junit.xml" \
                   --results-directory TestResults
                 '''
                 sh '''
                 dotnet test test/LiveUtils.LiveSeekData.Tests \
                   --logger "trx;LogFileName=LiveSeekData.trx" \
-                  --logger "junit;LogFilePath=TestResults/liveseekdata-junit.xml" \
+                  --logger "junit;LogFileName=liveseekdata-junit.xml" \
                   --results-directory TestResults
                 '''
             }
@@ -31,12 +31,12 @@ pipeline {
 
         stage('Generate HTML Reports') {
             steps {
-                // Install Trx2Html .NET tool (if not already installed)
-                sh 'dotnet tool install --global Trx2Html --version 1.0.0'
+                // Install trxlog2html .NET tool (if not already installed)
+                sh 'dotnet tool install --global trxlog2html'
                 
                 // Convert TRX files to HTML
-                sh 'Trx2Html TestResults/LiveUtils.trx -o TestResults/liveutils-report.html'
-                sh 'Trx2Html TestResults/LiveSeekData.trx -o TestResults/liveseekdata-report.html'
+                sh 'trxlog2html -i TestResults/LiveUtils.trx -o TestResults/liveutils-report.html'
+                sh 'trxlog2html -i TestResults/LiveSeekData.trx -o TestResults/liveseekdata-report.html'
             }
         }
     }
@@ -53,7 +53,7 @@ pipeline {
                 keepAll: true,
                 reportDir: 'TestResults',
                 reportFiles: 'liveutils-report.html,liveseekdata-report.html',
-                reportName: 'Test Results HTML',
+                reportName: 'LiveUtils Test Results HTML',
                 reportTitles: ''
             ])
         }
