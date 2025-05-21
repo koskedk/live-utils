@@ -37,9 +37,9 @@ pipeline {
                 sh 'dotnet tool install -g dotnet-reportgenerator-globaltool'
                 
                 // Convert TRX files to HTML
-                sh 'reportgenerator -reports:"TestResults/LiveUtils.trx" -targetdir:"TestResults/Report/LiveUtils" -reporttypes:HtmlInline_AzurePipelines_Light'
+                sh '~/.dotnet/tools/reportgenerator -reports:"TestResults/LiveUtils.trx" -targetdir:"TestResults/Report/LiveUtils" -reporttypes:HtmlInline_AzurePipelines_Light'
                 sh 'mv TestResults/Report/LiveUtils/index.html TestResults/liveutils-report.html'
-                sh 'reportgenerator -reports:"TestResults/LiveSeekData.trx" -targetdir:"TestResults/Report/LiveSeekData" -reporttypes:HtmlInline_AzurePipelines_Light'
+                sh '~/.dotnet/tools/reportgenerator -reports:"TestResults/LiveSeekData.trx" -targetdir:"TestResults/Report/LiveSeekData" -reporttypes:HtmlInline_AzurePipelines_Light'
                 sh 'mv TestResults/Report/LiveSeekData/index.html TestResults/liveseekdata-report.html'
             }
         }
