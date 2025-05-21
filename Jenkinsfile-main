@@ -34,12 +34,13 @@ pipeline {
         stage('Generate HTML Reports') {
             steps {
                 // Install trxlog2html .NET tool (if not already installed)
-                sh 'dotnet tool install --global trxlog2html || true'
+                sh 'dotnet tool install -g dotnet-reportgenerator-globaltool'
                 
                 // Convert TRX files to HTML
-                sh 'export PATH="$PATH:$HOME/.dotnet/tools"'
-                sh 'trxlog2html -i TestResults/LiveUtils.trx -o TestResults/liveutils-report.html'
-                sh 'trxlog2html -i TestResults/LiveSeekData.trx -o TestResults/liveseekdata-report.html'
+                sh 'reportgenerator -reports:"TestResults/LiveUtils.trx" -targetdir:"TestResults/Report/LiveUtils" -reporttypes:HtmlInline_AzurePipelines_Light'
+                sh 'mv TestResults/Report/LiveUtils/index.html TestResults/liveutils-report.html'
+                sh 'reportgenerator -reports:"TestResults/LiveSeekData.trx" -targetdir:"TestResults/Report/LiveSeekData" -reporttypes:HtmlInline_AzurePipelines_Light'
+                sh 'mv TestResults/Report/LiveSeekData/index.html TestResults/liveseekdata-report.html'
             }
         }
     }
