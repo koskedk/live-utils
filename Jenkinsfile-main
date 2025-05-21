@@ -37,6 +37,7 @@ pipeline {
                 sh 'dotnet tool install --global trxlog2html || true'
                 
                 // Convert TRX files to HTML
+                sh 'export PATH="$PATH:$HOME/.dotnet/tools"'
                 sh 'trxlog2html -i TestResults/LiveUtils.trx -o TestResults/liveutils-report.html'
                 sh 'trxlog2html -i TestResults/LiveSeekData.trx -o TestResults/liveseekdata-report.html'
             }
