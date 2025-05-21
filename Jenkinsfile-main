@@ -11,17 +11,25 @@ pipeline {
         stage('Test') {
             steps {
                 // Create directory for test results
-                sh 'mkdir -p TestResults'
+                sh 'mkdir -p TestResults/Coverage'
 
                 // Run tests with TRX and JUnit loggers
                 sh '''
                 dotnet test test/LiveUtils.Tests \
+                  --no-build \                  
+                  /p:CollectCoverage=true \
+                  /p:CoverletOutput=TestResults/Coverage/LiveUtils/ \
+                  /p:CoverletOutputFormat=cobertura \
                   --logger "trx;LogFileName=LiveUtils.trx" \
                   --logger "junit;LogFileName=liveutils-junit.xml" \
                   --results-directory TestResults
                 '''
                 sh '''
                 dotnet test test/LiveUtils.LiveSeekData.Tests \
+                  --no-build \
+                  /p:CollectCoverage=true \
+                  /p:CoverletOutput=TestResults/Coverage/LiveSeekData/ \
+                  /p:CoverletOutputFormat=cobertura \
                   --logger "trx;LogFileName=LiveSeekData.trx" \
                   --logger "junit;LogFileName=liveseekdata-junit.xml" \
                   --results-directory TestResults
@@ -48,7 +56,7 @@ pipeline {
 
             // Publish HTML reports
             publishHTML([
-                allowMissing: false,
+                allowMissing: true,
                 alwaysLinkToLastBuild: true,
                 keepAll: true,
                 reportDir: 'TestResults',
@@ -56,6 +64,15 @@ pipeline {
                 reportName: 'LiveUtils Test Results HTML',
                 reportTitles: ''
             ])
+            
+            
+             // Archive coverage reports
+             archiveArtifacts artifacts: 'TestResults/Coverage/**/*.xml', allowEmptyArchive: true
+             
+             
+             // Optional: Publish Cobertura coverage if plugin is installed
+             cobertura coberturaReportFile: 'TestResults/Coverage/**/coverage.cobertura.xml'
+
         }
     }
 }
