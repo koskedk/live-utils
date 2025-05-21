@@ -11,7 +11,7 @@ pipeline {
         stage('Test') {
             steps {
                 // Create directory for test results
-                sh 'mkdir -p TestResults/Coverage'
+                sh 'mkdir -p TestResults'
 
                 // Run tests with TRX and JUnit loggers
                 sh '''
@@ -30,37 +30,14 @@ pipeline {
                 '''
             }
         }
-
-        stage('Generate HTML Reports') {
-            steps {
-                // Install trxlog2html .NET tool (if not already installed)
-                sh 'dotnet tool install -g trxlog2html'
-                
-                // Convert TRX files to HTML
-                sh '~/.dotnet/tools/trxlog2html -i TestResults/LiveUtils.trx -o TestResults/liveutils-report.html'
-                sh '~/.dotnet/tools/trxlog2html -i TestResults/LiveSeekData.trx -o TestResults/liveseekdata-report.html'
-            }
-        }
     }
 
     post {
         always {
             // Publish JUnit results to Jenkins dashboard
             junit 'TestResults/*-junit.xml'
-
-            // Publish HTML reports
-            publishHTML([
-                allowMissing: true,
-                alwaysLinkToLastBuild: true,
-                keepAll: true,
-                reportDir: 'TestResults',
-                reportFiles: 'liveutils-report.html,liveseekdata-report.html',
-                reportName: 'LiveUtils Test Results HTML',
-                reportTitles: ''
-            ])
-            
-             // Optional: Publish Cobertura coverage if plugin is installed
-             recordCoverage tools: [[parser: 'COBERTURA', pattern: 'TestResults/**/coverage.cobertura.xml']]
+            // Publish coverage
+            recordCoverage tools: [[parser: 'COBERTURA', pattern: 'TestResults/**/coverage.cobertura.xml']]
         }
     }
 }
