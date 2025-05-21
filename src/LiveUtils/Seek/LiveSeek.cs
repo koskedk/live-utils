@@ -42,11 +42,11 @@ namespace LiveUtils.Seek
         
         public LiveCursor(long index, long beginRow, long endRow)
         {
-            if (index == 0 || endRow == 0 || beginRow == 0)
-                throw new ArgumentException("only positive values allowed");
-            
-            if (index < 0 || endRow < 0 || beginRow < 0)
-                throw new ArgumentException("only positive values allowed");
+            // if (index == 0 || endRow == 0 || beginRow == 0)
+            //     throw new ArgumentException("only positive values allowed");
+            //
+            // if (index < 0 || endRow < 0 || beginRow < 0)
+            //     throw new ArgumentException("only positive values allowed");
             
             Index = index;
             BeginRow = beginRow;
